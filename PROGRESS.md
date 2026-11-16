@@ -2,7 +2,7 @@
 
 **Fecha de esta revisión:** 16/11/2026
 **Entorno verificado:** PHP 8.2.12, MariaDB 10.4.32, base `dbAlexasys` (20 tablas).
-**Alcance:** revisión funcional, dashboard por rol, ubicación pública y formulario de contacto.
+**Alcance:** revisión funcional, dashboard por rol, catálogo público, formulario y bandeja de contacto.
 
 > Este documento registra únicamente lo comprobado en el entorno local. Las
 > pruebas manuales pendientes se indican como tales; no se declaran resultados
@@ -16,6 +16,9 @@ corrigieron defectos que impedían mostrar el dashboard y ejecutar búsquedas, s
 completó el dashboard para los tres roles, se creó la vista faltante de pagos de
 servicio y se completó y enlazó la colección de iconos. También se agregó la
 imagen de ubicación y un formulario de contacto con validación y almacenamiento.
+El catálogo público quedó ampliado a 37 productos con fotografías verificadas y
+agrupación por categoría, y las consultas del formulario ahora se pueden leer en
+la bandeja **Consultas web** del panel (solo Gerente).
 
 ## 2. Correcciones aplicadas en esta revisión
 
@@ -28,12 +31,14 @@ imagen de ubicación y un formulario de contacto con validación y almacenamient
 | 5 | La carpeta `imagen/iconos` estaba incompleta y los iconos no se usaban en el sitio público ni en el panel. | `imagen/iconos/*`, `Views/publico/inicio.php`, `Views/publico/nosotros.php`, `Views/dashboard.view.php`, `assets/css/estilos.css` | 12 iconos SVG nuevos, `vision.png` enlazado; accesos rápidos y tarjetas con iconos. |
 | 6 | Acceso directo a controladores sin bloqueo web. | `Controllers/.htaccess` | Añadido `Require all denied`. |
 | 7 | La página no mostraba la ubicación y Contactos no permitía enviar consultas. | `Views/publico/nosotros.php`, `Views/publico/contactos.php`, `Controllers/index.php`, `Models/ConsultaContacto.php` | Ubicación visible; formulario con CSRF, validaciones, guardado en MySQL y notificación por correo si SMTP está configurado. |
+| 8 | El formulario usaba `contacto@example.com` y lanzaba una excepción si el destino era inválido; sin SMTP el mensaje quedaba en la base sin forma de leerlo. | `config/configuracion.php`, `Controllers/index.php`, `Models/ConsultaContacto.php`, `Controllers/consultas-contacto.php`, `Views/consultas-contacto.view.php` | Destino `contacto@alexsys.bo`; el guardado y el envío de correo se manejan por separado (sin error fatal) y el Gerente dispone de la bandeja **Consultas web**. |
+| 9 | El catálogo tenía rutas de imagen inconsistentes, la carpeta `descritorio` mal escrita y solo 12 productos. | `database/alexsys.sql`, `database/actualizacion-catalogo.sql`, `imagen/productos/*`, `Models/Producto.php`, `Views/publico/productos.php` | 37 productos con imágenes verificadas, carpetas `accesorios/`, `escritorio/` y `portatiles/`, y catálogo agrupado por categoría. |
 
 ## 3. Estado por módulo
 
 | Módulo | Implementación | Verificación en esta revisión |
 |---|---|---|
-| 1. Sitio público (Inicio, Nosotros, Productos, Servicios, Contactos) | Completo | HTTP 200; ubicación cargada; validación del formulario comprobada; envío por correo pendiente de configurar SMTP |
+| 1. Sitio público (Inicio, Nosotros, Productos, Servicios, Contactos) | Completo | HTTP 200; ubicación cargada; catálogo de 37 productos agrupado por categoría; formulario validado y probado; envío por correo pendiente de configurar SMTP |
 | 2. Acceso y sesiones | Completo | Login correcto para los tres roles; permisos por módulo redirigen al dashboard |
 | 3. Dashboard | Completo | HTTP 200 para Gerente, Vendedor y Técnico; 0 avisos PHP; métricas y accesos coherentes con el rol |
 | 4. Clientes | Completo | Listado y búsqueda HTTP 200 |
@@ -41,7 +46,7 @@ imagen de ubicación y un formulario de contacto con validación y almacenamient
 | 6. Productos | Completo | Listado y búsqueda HTTP 200 |
 | 7. Proveedores | Completo | Listado HTTP 200 (solo Gerente) |
 | 8. Compras | Completo | Listado HTTP 200 (solo Gerente) |
-| 9. Inventario | Completo | Listado HTTP 200; verificación de stock: 12 productos, 0 discrepancias |
+| 9. Inventario | Completo | Listado HTTP 200; verificación de stock: 37 productos, 0 discrepancias |
 | 10. Ventas | Completo | Listado y búsqueda HTTP 200 |
 | 11. Pagos de ventas | Completo | Listado HTTP 200; saldos verificados por SQL |
 | 12. Equipos de clientes | Completo | Listado HTTP 200 |
@@ -52,6 +57,7 @@ imagen de ubicación y un formulario de contacto con validación y almacenamient
 | 17. Garantías | Completo | Listado y formulario HTTP 200 |
 | 18. Reportes | Completo | Reporte general y filtrado por fechas HTTP 200 |
 | 19. Usuarios y roles | Completo | Formulario HTTP 200 (solo Gerente); permisos aplicados |
+| Bandeja de consultas web (Gerente) | Completo | HTTP 200; 3 mensajes guardados visibles; sin errores de consola |
 
 ## 4. Dashboard por rol
 
@@ -69,9 +75,13 @@ imagen de ubicación y un formulario de contacto con validación y almacenamient
 ## 5. Base de datos e integridad
 
 - 20 tablas en `dbAlexasys`, incluida `consultas_contacto`.
+- Catálogo: **37 productos** (8 computadoras de escritorio, 9 laptops, 13
+  accesorios, 6 componentes/repuestos y 1 impresora).
 - Comprobaciones ejecutadas:
-  - `MovimientoInventario::verificacionStock()`: **0 discrepancias** en 12 productos.
+  - `MovimientoInventario::verificacionStock()`: **0 discrepancias** en 37 productos.
   - Stock mínimo global: **2** (no hay stock negativo).
+  - Compra `C-000002`: total 139 030,00; sus detalles y movimientos de
+    inventario coinciden con el encabezado.
   - Ventas confirmadas: saldo = total − pagos confirmados.
   - Órdenes de servicio: saldo = mano de obra + repuestos − pagos confirmados.
   - Sin sobrepagos en ventas ni en servicios.
@@ -85,5 +95,8 @@ imagen de ubicación y un formulario de contacto con validación y almacenamient
 3. Prueba de carga de imágenes de producto (JPG/PNG/WEBP, límite 2 MB).
 4. Configurar credenciales de producción y desactivar `demo.activo`.
 5. Sustituir los datos de demostración por datos reales antes de la entrega.
-6. Añadir una suite automatizada de pruebas (no existe actualmente).
-7. Configurar el relay SMTP de XAMPP para que las notificaciones del formulario lleguen al correo destino.
+6. Ampliar la suite de humo (`tests/smoke.ps1`, 38 comprobaciones) con pruebas
+   de alta, edición y anulación; valorar PHPUnit para pruebas unitarias.
+7. Configurar el relay SMTP de XAMPP para que las notificaciones del formulario
+   lleguen al correo destino. Mientras no haya SMTP, las consultas se guardan y
+   se leen en la bandeja **Consultas web**.

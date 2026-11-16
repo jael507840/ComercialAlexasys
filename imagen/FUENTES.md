@@ -7,9 +7,13 @@ Las rutas son relativas a `MVC1/`.
 
 | Archivo | Origen |
 |---|---|
-| `imagen/logo/logo-alexsys.svg` | Logotipo del proyecto Alex@sys |
-| `imagen/logo/logo-alexsys-claro.svg` | Variante clara del mismo logotipo |
-| `imagen/logo/favicon.svg` | Isotipo derivado del logotipo |
+| `imagen/logo/logo1.jfif` | Logotipo actual, usado en la barra pública, el pie, el acceso y el panel administrativo |
+| `imagen/logo/logo-alexsys.svg` | Logotipo vectorial anterior, conservado como respaldo |
+| `imagen/logo/logo-alexsys-claro.svg` | Variante clara del logotipo anterior |
+| `imagen/logo/favicon.svg` | Favicon del sitio |
+
+El logotipo `logo1.jfif` tiene fondo blanco; en zonas oscuras se muestra dentro
+del contenedor `.marca-logo-fondo` para mantener el contraste.
 
 ## 2. Fotografías
 
@@ -17,23 +21,24 @@ Las rutas son relativas a `MVC1/`.
 |---|---|---|
 | `imagen/banners/` | Banner de bienvenida, hero de tienda y banner de servicio | Material del proyecto |
 | `imagen/nosotros/` | Tienda, equipo de trabajo y atención al cliente | Material del proyecto |
-| `imagen/productos/` | Computadoras, laptops, periféricos, componentes e impresoras | Material del proyecto |
+| `imagen/productos/accesorios/` | Monitores, teclados, mouse, auriculares, discos, adaptadores y redes | Material del proyecto |
+| `imagen/productos/escritorio/` | Computadoras de escritorio, all in one y equipos gamer | Material del proyecto |
+| `imagen/productos/portatiles/` | Laptops ASUS, HP, Lenovo y MSI | Material del proyecto |
+| `imagen/productos/componentes.jpg` | Componentes y repuestos | Material del proyecto |
+| `imagen/productos/impresora.jpg` | Impresora multifuncional | Material del proyecto |
 | `imagen/servicios/` | Mantenimiento, reparación, impresoras y configuración | Material del proyecto |
-| `imagen/accesorios/` | Accesorios de catálogo | Material del proyecto |
-| `imagen/computadoras/` | Equipos de catálogo | Material del proyecto |
 
 Estas fotografías se incluyeron con el proyecto para fines académicos y de
 demostración. No se descargaron de bancos de imágenes en esta revisión.
 
-> Archivos vacíos (0 bytes), no referenciados por las vistas:
-> `imagen/accesorios/combo-gamer-red-dragon.jpg`,
-> `imagen/accesorios/mouse-inalambrico-genius.jpg`,
-> `imagen/accesorios/ssd-1tb.jpg`,
-> `imagen/computadoras/all-in-one-elite.jpg`,
-> `imagen/computadoras/laptop-gamer-pro.jpg`,
-> `imagen/computadoras/pc-escritorio-x10.jpg`.
-> Se conservan como marcadores de posición; pueden eliminarse o reemplazarse
-> por fotografías definitivas.
+> Las 37 rutas de imagen usadas por el catálogo existen y fueron verificadas.
+> Quedan algunas fotografías antiguas sin uso en la raíz de `imagen/productos/`
+> (`all-in-one.jpg`, `laptop-*.jpg`, `laptop-env.png`); se conservan como
+> respaldo y pueden eliminarse si no se necesitan.
+
+> Las carpetas `imagen/accesorios/` e `imagen/computadoras/` contienen archivos
+> vacíos (0 bytes) no referenciados por las vistas. Se conservan como marcadores
+> de posición; pueden eliminarse o reemplazarse por fotografías definitivas.
 
 ## 3. Iconos de módulos
 
@@ -56,11 +61,12 @@ estilo plano, fondo redondeado y trazo de 2.2–2.8 px:
 | `intervenciones.svg` | Detalle e intervenciones |
 | `repuestos.svg` | Repuestos usados |
 | `pagos.svg` | Pagos de ventas y servicios |
+| `consultas.svg` | Bandeja de consultas web |
 | `reportes.svg` | Reportes |
 | `usuarios.svg` | Usuarios y roles |
 
 Los seis iconos marcados como existentes ya formaban parte del proyecto y se
-mantuvieron; los diez restantes se crearon en esta revisión con el mismo estilo.
+mantuvieron; los once restantes se crearon en esta revisión con el mismo estilo.
 Los archivos `dashboard.svg`, `productos.svg`, etc. se usan en el dashboard y en
 las páginas públicas de Inicio y Nosotros.
 

@@ -38,23 +38,26 @@
        'charset'  => 'utf8mb4',
    ],
    'contacto' => [
-       'correo_destino' => 'contacto@example.com',
+       'correo_destino'       => 'contacto@alexsys.bo',
+       'notificar_por_correo' => true,
    ],
    ```
 
    El formulario guarda cada consulta en `consultas_contacto` e intenta
-   notificar a `contacto.correo_destino`. Para una base existente, aplique la
-   migración sin volver a importar el esquema (la importación completa reinicia
+   notificar a `contacto.correo_destino`. Para una base existente, aplique las
+   migraciones sin volver a importar el esquema (la importación completa reinicia
    los datos):
 
    ```powershell
    Get-Content database\actualizacion-consultas-contacto.sql -Raw |
      & C:\xampp\mysql\bin\mysql.exe -u root
+   Get-Content database\actualizacion-catalogo.sql -Raw |
+     & C:\xampp\mysql\bin\mysql.exe -u root
    ```
 
    El envío por correo necesita un relay SMTP configurado en PHP/XAMPP. Si no
-   está disponible, la consulta permanece guardada y el sitio indica que no se
-   pudo enviar la notificación. Configure el servidor SMTP localmente; no
+   está disponible, la consulta permanece guardada y el Gerente puede leerla en
+   **Consultas web** dentro del panel. Configure el servidor SMTP localmente; no
    guarde contraseñas de correo en el repositorio.
 
 5. Abra `http://localhost/alexsys/index.php` o, con el servidor embebido:

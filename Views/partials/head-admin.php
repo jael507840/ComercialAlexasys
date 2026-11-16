@@ -18,6 +18,7 @@ $menu = [
         ['clientes', 'Clientes', 'clientes.svg'],
         ['ventas', 'Ventas', 'ventas.svg'],
         ['pagos-venta', 'Pagos de ventas', 'pagos.svg'],
+        ['consultas-contacto', 'Consultas web', 'consultas.svg'],
     ],
     'Catálogo e inventario' => [
         ['categorias', 'Categorías', 'categorias.svg'],

@@ -74,31 +74,48 @@ if ($pagina === 'contactos' && es_post()) {
 
     if ($erroresContacto === []) {
         $consultaModelo = new ConsultaContacto();
-        $idConsulta = $consultaModelo->registrar($formularioContacto);
-        $correoDestino = (string) config('contacto.correo_destino', '');
-        if (!filter_var($correoDestino, FILTER_VALIDATE_EMAIL)) {
-            throw new RuntimeException('La dirección de destino del formulario de contacto no es válida.');
+        $idConsulta = 0;
+        try {
+            $idConsulta = $consultaModelo->registrar($formularioContacto);
+        } catch (Throwable $e) {
+            error_log('[Alex@sys] No se pudo guardar la consulta de contacto: ' . $e->getMessage());
+            $erroresContacto[] = 'No se pudo registrar la consulta. Intente nuevamente en unos minutos.';
         }
 
-        $asunto = 'Consulta desde el sitio web - Alex@sys';
-        $cuerpo = "Nombre: {$formularioContacto['nombre']}\n"
-            . "Correo: {$formularioContacto['correo']}\n\n"
-            . "Consulta:\n{$formularioContacto['mensaje']}\n";
-        $cabeceras = [
-            'From: Alex@sys <' . $correoDestino . '>',
-            'Reply-To: ' . $formularioContacto['correo'],
-            'Content-Type: text/plain; charset=UTF-8',
-        ];
+        if ($erroresContacto === []) {
+            $correoDestino = trim((string) config('contacto.correo_destino', ''));
+            $notificar = (bool) config('contacto.notificar_por_correo', true);
 
-        if (function_exists('mail') && @mail($correoDestino, $asunto, $cuerpo, implode("\r\n", $cabeceras))) {
-            $consultaModelo->marcarNotificacionEnviada($idConsulta);
-            flash('success', 'Correo enviado correctamente. La tienda recibió tu consulta.');
-        } else {
-            error_log('[Alex@sys] Consulta de contacto guardada, pero no se pudo enviar el correo. ID: ' . $idConsulta);
-            flash('warning', 'Tu consulta quedó guardada, pero el correo no pudo enviarse. Contacta a la tienda por teléfono para confirmar su recepción.');
+            if (!$notificar || !filter_var($correoDestino, FILTER_VALIDATE_EMAIL)) {
+                error_log('[Alex@sys] Consulta de contacto guardada sin notificación por correo. ID: ' . $idConsulta);
+                flash('success', 'Tu consulta fue registrada. El personal de la tienda la revisará y se pondrá en contacto contigo.');
+                redirect('index', ['pagina' => 'contactos']);
+            }
+
+            $asunto = 'Consulta desde el sitio web - Alex@sys';
+            $cuerpo = "Nombre: {$formularioContacto['nombre']}\n"
+                . "Correo: {$formularioContacto['correo']}\n\n"
+                . "Consulta:\n{$formularioContacto['mensaje']}\n";
+            $cabeceras = [
+                'MIME-Version: 1.0',
+                'From: Alex@sys <' . $correoDestino . '>',
+                'Reply-To: ' . $formularioContacto['correo'],
+                'Content-Type: text/plain; charset=UTF-8',
+            ];
+
+            $enviado = function_exists('mail')
+                && @mail($correoDestino, $asunto, $cuerpo, implode("\r\n", $cabeceras));
+
+            if ($enviado) {
+                $consultaModelo->marcarNotificacionEnviada($idConsulta);
+                flash('success', 'Correo enviado correctamente. La tienda recibió tu consulta.');
+            } else {
+                error_log('[Alex@sys] Consulta de contacto guardada, pero no se pudo enviar el correo. ID: ' . $idConsulta);
+                flash('warning', 'Tu consulta quedó registrada para que la tienda la revise. Si necesitas una respuesta inmediata, llámanos por teléfono.');
+            }
+
+            redirect('index', ['pagina' => 'contactos']);
         }
-
-        redirect('index', ['pagina' => 'contactos']);
     }
 }
 

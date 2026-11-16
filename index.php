@@ -11,7 +11,7 @@ $rutasPermitidas = [
     'clientes', 'productos', 'categorias', 'proveedores', 'compras',
     'ventas', 'pagos-venta', 'inventario', 'equipos', 'ordenes-servicio',
     'detalle-servicio', 'repuestos-servicio', 'pagos-servicio', 'garantias',
-    'reportes',
+    'reportes', 'consultas-contacto',
 ];
 
 $ruta = (string) ($_GET['ruta'] ?? 'index');

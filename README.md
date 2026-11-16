@@ -31,13 +31,15 @@ MariaDB, sin frameworks de backend.
    C:\xampp\mysql\bin\mysql.exe -u root < database\alexsys.sql
    ```
 
-   El script crea `dbAlexasys`, sus 20 tablas y datos de ejemplo. **Es
-   destructivo**: elimina y vuelve a crear las tablas del esquema.
+   El script crea `dbAlexasys`, sus 20 tablas y datos de ejemplo (37 productos).
+   **Es destructivo**: elimina y vuelve a crear las tablas del esquema.
 3. Ajuste las credenciales en `config/configuracion.php` (`db.host`, `db.puerto`,
    `db.nombre`, `db.usuario`, `db.password`).
    La dirección destinataria del formulario se configura en
-   `contacto.correo_destino`. Para una base existente, aplique
-   `database/actualizacion-consultas-contacto.sql` sin reimportar el esquema.
+   `contacto.correo_destino` y el envío de correo se activa o desactiva con
+   `contacto.notificar_por_correo`. Para una base existente, aplique
+   `database/actualizacion-consultas-contacto.sql` y
+   `database/actualizacion-catalogo.sql` sin reimportar el esquema.
 4. Inicie el servidor:
 
    ```powershell
@@ -79,6 +81,7 @@ MVC1/
 │   └── publico/              Inicio, Nosotros, Productos, Servicios, Contactos
 ├── assets/                   CSS, JS y librerías locales
 ├── imagen/                   Logo, banners, fotos e iconos SVG
+│   └── productos/            Fotos: accesorios/, escritorio/, portatiles/
 ├── database/alexsys.sql      Esquema y datos de demostración (20 tablas)
 ├── docs/                     Manuales y documentación
 ├── logs/                     Errores de PHP y del servidor
@@ -106,6 +109,8 @@ MVC1/
 17. Garantías.
 18. Reportes.
 19. Usuarios y roles.
+20. Bandeja **Consultas web** (solo Gerente): lee los mensajes del formulario
+    público aunque el servidor no tenga correo configurado.
 
 ## 7. Reglas de negocio principales
 
@@ -138,7 +143,33 @@ El detalle de las pruebas ejecutadas y su evidencia está en
 [`TESTING.md`](TESTING.md). El estado de avance por módulo está en
 [`PROGRESS.md`](PROGRESS.md).
 
-## 10. Documentación
+La suite de humo se ejecuta con el servidor de desarrollo activo:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tests\smoke.ps1
+```
+
+## 10. Publicación
+
+Este proyecto necesita **PHP 8.2+ y MySQL/MariaDB**. Por eso **GitHub Pages no
+puede mostrarlo**: Pages solo sirve archivos estáticos (HTML, CSS, JS) y no
+ejecuta PHP ni conecta bases de datos. El repositorio puede estar completo y
+aun así la URL de Pages devolver 404.
+
+Para publicarlo elija un hosting con PHP y MySQL, por ejemplo:
+
+1. **XAMPP/local** para la demostración: copie `MVC1` en `htdocs`, importe
+   `database/alexsys.sql` e ingrese por `http://localhost/MVC1/`.
+2. **Hosting PHP compartido** (cPanel): suba el contenido de `MVC1`, cree la
+   base, importe el SQL y ajuste `config/configuracion.php`.
+3. **Servicios con contenedores** (Railway, Render, Fly.io): configure un
+   servicio PHP 8.2 y una base MySQL/MariaDB; use las variables del proveedor en
+   `config/configuracion.php`.
+
+En producción desactive `demo.activo`, cambie las contraseñas de demostración y
+mantenga `config/`, `logs/`, `database/` y `tests/` fuera del directorio público.
+
+## 11. Documentación
 
 - [`docs/INSTALACION.md`](docs/INSTALACION.md): instalación y puesta en marcha.
 - [`docs/MANUAL_USUARIO.md`](docs/MANUAL_USUARIO.md): uso por rol.

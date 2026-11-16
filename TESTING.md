@@ -33,7 +33,7 @@ Get-ChildItem -Recurse -Filter *.php | ForEach-Object {
 }
 ```
 
-**Resultado:** 90 archivos PHP revisados, **0 errores de sintaxis**.
+**Resultado:** 92 archivos PHP revisados, **0 errores de sintaxis**.
 
 ## 3. Prueba de humo
 
@@ -42,17 +42,18 @@ powershell -ExecutionPolicy Bypass -File tests\smoke.ps1
 ```
 
 La prueba inicia sesión con los tres usuarios, comprueba el dashboard, los
-módulos del panel, las páginas públicas, la imagen de ubicación, el formulario
-de contacto (incluidos datos inválidos y límites) y los permisos denegados. Las
-pruebas del formulario no guardan consultas ni envían correos. La salida completa quedó en
+módulos del panel (incluida la bandeja **Consultas web**), las páginas públicas,
+la imagen de ubicación, el catálogo agrupado, el formulario de contacto
+(incluidos datos inválidos y límites) y los permisos denegados. Las pruebas del
+formulario no guardan consultas ni envían correos. La salida completa quedó en
 `tests/smoke-resultado.txt`.
 
-**Resultado:** **37 comprobaciones PASS, 0 FAIL.**
+**Resultado:** **38 comprobaciones PASS, 0 FAIL.**
 
 | Grupo | Comprobaciones | Resultado |
 |---|---|---|
 | Dashboard por rol | 9 (estado, perfil, accesos e iconos) | 9 PASS |
-| Módulos del panel (Gerente) | 17 | 17 PASS |
+| Módulos del panel (Gerente) | 18 | 18 PASS |
 | Páginas públicas y formulario de contacto | 9 | 9 PASS |
 | Permisos denegados (Vendedor/Técnico) | 2 | 2 PASS |
 
@@ -60,9 +61,10 @@ Detalle destacado:
 
 | Caso | Evidencia |
 |---|---|
-| Dashboard Gerente | HTTP 200, 43 040 bytes, perfil `text-bg-primary`, 16 accesos e iconos |
+| Dashboard Gerente | HTTP 200, 43 484 bytes, perfil `text-bg-primary`, 16 accesos e iconos |
 | Dashboard Vendedor | HTTP 200, 35 022 bytes, perfil `text-bg-success`, 9 accesos e iconos |
 | Dashboard Técnico | HTTP 200, 31 160 bytes, perfil `text-bg-info`, 10 accesos e iconos |
+| Bandeja Consultas web | HTTP 200, 21 303 bytes, 3 mensajes y 3 avisos pendientes; correo configurado `contacto@alexsys.bo` |
 | Avisos PHP en las respuestas HTTP | 0 (`Warning`, `Fatal error`, `Notice`, `Deprecated`) |
 | Vendedor accede a `compras` | Redirigido al dashboard |
 | Técnico accede a `ventas` | Redirigido al dashboard |
@@ -70,13 +72,20 @@ Detalle destacado:
 Comprobaciones adicionales del cambio:
 
 - `imagen/nosotros/ubicacion.PNG`: HTTP 200.
+- El catálogo público muestra **37 productos** agrupados en 5 categorías
+  (8 escritorio, 9 laptops, 13 accesorios, 6 componentes/repuestos y 1 impresora);
+  las 37 rutas de imagen existen en `imagen/productos/`.
 - El formulario rechaza nombres con números, correos inválidos y campos que
   exceden los límites.
 - El modelo de consultas insertó y actualizó el estado de notificación dentro
   de una transacción revertida; no quedaron datos de prueba en la base.
-- Los cinco archivos PHP modificados pasaron `php -l`.
+- En la bandeja **Consultas web** se verificaron 3 mensajes guardados, 3 avisos
+  pendientes y el buzón `contacto@alexsys.bo`; la página no generó errores de
+  consola.
+- Los archivos PHP modificados pasaron `php -l`.
 - El envío real de correo no se probó: XAMPP no tiene un relay SMTP local activo.
-  Las consultas se guardan aunque la notificación por correo falle.
+  Las consultas se guardan aunque la notificación por correo falle y se leen en
+  la bandeja del panel.
 
 ## 4. Iconos e interfaz
 
@@ -97,7 +106,7 @@ Comprobación en navegador (viewport 1000 × 700) de las imágenes cargadas:
 Consulta ejecutada con `MovimientoInventario::verificacionStock()`:
 
 ```
-productos=12 discrepancias=0
+productos=37 discrepancias=0
 stock_minimo_global=2
 ```
 
@@ -145,4 +154,5 @@ Estas pruebas **no** se ejecutaron en esta revisión y quedan como trabajo futur
 3. Carga de imágenes de producto (JPG/PNG/WEBP, límite 2 MB).
 4. Restauración de un respaldo en un entorno limpio.
 5. Pruebas de concurrencia y doble envío de formularios.
-6. Suite automatizada con PHPUnit o similar (no existe actualmente).
+6. Ampliar la suite de humo (`tests/smoke.ps1`) y valorar PHPUnit para pruebas
+   unitarias.

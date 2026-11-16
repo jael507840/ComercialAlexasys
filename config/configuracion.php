@@ -27,7 +27,12 @@ return [
     ],
 
     'contacto' => [
-        'correo_destino' => 'contacto@example.com',
+        // Buzón que recibe las consultas del formulario público.
+        // Cámbielo por el correo real de la tienda antes de publicar el sitio.
+        'correo_destino' => 'contacto@alexsys.bo',
+        // Si el servidor no tiene correo configurado, la consulta igual se
+        // guarda en la base de datos y se puede leer en el panel.
+        'notificar_por_correo' => true,
     ],
 
     'seguridad' => [

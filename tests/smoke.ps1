@@ -57,7 +57,7 @@ $rutas = @(
     "clientes", "categorias", "productos", "proveedores", "compras", "inventario",
     "ventas", "pagos-venta", "equipos", "ordenes-servicio", "detalle-servicio",
     "repuestos-servicio", "pagos-servicio", "garantias", "garantias&accion=nuevo",
-    "reportes", "registrar-usuario"
+    "reportes", "registrar-usuario", "consultas-contacto"
 )
 foreach ($ruta in $rutas) {
     try {
