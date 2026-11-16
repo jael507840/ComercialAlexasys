@@ -23,7 +23,7 @@ final class Conexion
         $config = $GLOBALS['config']['db'] ?? [];
         $host   = $config['host'] ?? '127.0.0.1';
         $puerto = (int) ($config['puerto'] ?? 3306);
-        $nombre = $config['nombre'] ?? 'dbAlexasys';
+        $nombre = $config['nombre'] ?? 'dbalexasys';
         $charset = $config['charset'] ?? 'utf8mb4';
 
         $dsn = sprintf('mysql:host=%s;port=%d;dbname=%s;charset=%s', $host, $puerto, $nombre, $charset);

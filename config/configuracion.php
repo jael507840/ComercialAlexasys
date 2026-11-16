@@ -20,7 +20,7 @@ return [
     'db' => [
         'host'     => '127.0.0.1',
         'puerto'   => 3306,
-        'nombre'   => 'dbAlexasys',
+        'nombre'   => 'dbalexasys',
         'usuario'  => 'root',
         'password' => '',
         'charset'  => 'utf8mb4',

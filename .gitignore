@@ -3,3 +3,6 @@
 !.env.example
 /logs/*.log
 /tests/smoke-resultado.txt
+
+# Dependencias instaladas con Composer (se regeneran con: composer install)
+/vendor/

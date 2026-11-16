@@ -4,7 +4,7 @@
 
 | Elemento | Ruta | Contenido |
 |---|---|---|
-| Base de datos | `dbAlexasys` | 20 tablas, incluidas las consultas del formulario de contacto |
+| Base de datos | `dbalexasys` | 20 tablas, incluidas las consultas del formulario de contacto |
 | Código y configuración | carpeta `MVC1` | Controladores, modelos, vistas, CSS, JS |
 | Imágenes | `imagen/` | Logo, fotos de productos, servicios, nosotros e iconos |
 | Imágenes subidas | `imagen/productos/` | Archivos cargados por los usuarios |
@@ -20,7 +20,7 @@ en otra máquina o servicio de almacenamiento.
 ```powershell
 $fecha = Get-Date -Format "yyyyMMdd-HHmm"
 C:\xampp\mysql\bin\mysqldump.exe -u root --single-transaction --routines --triggers `
-  --default-character-set=utf8mb4 dbAlexasys > "C:\respaldos\dbAlexasys-$fecha.sql"
+  --default-character-set=utf8mb4 dbalexasys > "C:\respaldos\dbalexasys-$fecha.sql"
 ```
 
 ### Linux
@@ -28,7 +28,7 @@ C:\xampp\mysql\bin\mysqldump.exe -u root --single-transaction --routines --trigg
 ```bash
 fecha=$(date +%Y%m%d-%H%M)
 mysqldump -u root -p --single-transaction --routines --triggers \
-  --default-character-set=utf8mb4 dbAlexasys > "/var/backups/dbAlexasys-$fecha.sql"
+  --default-character-set=utf8mb4 dbalexasys > "/var/backups/dbalexasys-$fecha.sql"
 ```
 
 Verifique que el archivo no esté vacío y que termine con la línea
@@ -53,13 +53,13 @@ necesita conservar los errores históricos.
 1. Cree una base limpia si es necesario:
 
    ```sql
-   CREATE DATABASE dbAlexasys CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   CREATE DATABASE dbalexasys CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
    ```
 
 2. Importe el respaldo:
 
    ```powershell
-   C:\xampp\mysql\bin\mysql.exe -u root dbAlexasys < "C:\respaldos\dbAlexasys-AAAAMMDD-HHMM.sql"
+   C:\xampp\mysql\bin\mysql.exe -u root dbalexasys < "C:\respaldos\dbalexasys-AAAAMMDD-HHMM.sql"
    ```
 
 3. Restaure la carpeta de archivos e imágenes en su ubicación original.

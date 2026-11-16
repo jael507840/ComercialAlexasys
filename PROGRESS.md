@@ -1,7 +1,7 @@
 # Estado del proyecto Alex@sys
 
 **Fecha de esta revisión:** 16/11/2026
-**Entorno verificado:** PHP 8.2.12, MariaDB 10.4.32, base `dbAlexasys` (20 tablas).
+**Entorno verificado:** PHP 8.2.12, MariaDB 10.4.32, base `dbalexasys` (20 tablas).
 **Alcance:** revisión funcional, dashboard por rol, catálogo público, formulario y bandeja de contacto.
 
 > Este documento registra únicamente lo comprobado en el entorno local. Las
@@ -18,7 +18,10 @@ servicio y se completó y enlazó la colección de iconos. También se agregó l
 imagen de ubicación y un formulario de contacto con validación y almacenamiento.
 El catálogo público quedó ampliado a 37 productos con fotografías verificadas y
 agrupación por categoría, y las consultas del formulario ahora se pueden leer en
-la bandeja **Consultas web** del panel (solo Gerente).
+la bandeja **Consultas web** del panel (solo Gerente). En la revisión más reciente
+se mejoró el módulo de reportes con tarjetas de resumen, filtros visibles y
+exportación a PDF de los 11 informes mediante Composer y Dompdf, usando la base
+`dbalexasys`.
 
 ## 2. Correcciones aplicadas en esta revisión
 
@@ -33,6 +36,7 @@ la bandeja **Consultas web** del panel (solo Gerente).
 | 7 | La página no mostraba la ubicación y Contactos no permitía enviar consultas. | `Views/publico/nosotros.php`, `Views/publico/contactos.php`, `Controllers/index.php`, `Models/ConsultaContacto.php` | Ubicación visible; formulario con CSRF, validaciones, guardado en MySQL y notificación por correo si SMTP está configurado. |
 | 8 | El formulario usaba `contacto@example.com` y lanzaba una excepción si el destino era inválido; sin SMTP el mensaje quedaba en la base sin forma de leerlo. | `config/configuracion.php`, `Controllers/index.php`, `Models/ConsultaContacto.php`, `Controllers/consultas-contacto.php`, `Views/consultas-contacto.view.php` | Destino `contacto@alexsys.bo`; el guardado y el envío de correo se manejan por separado (sin error fatal) y el Gerente dispone de la bandeja **Consultas web**. |
 | 9 | El catálogo tenía rutas de imagen inconsistentes, la carpeta `descritorio` mal escrita y solo 12 productos. | `database/alexsys.sql`, `database/actualizacion-catalogo.sql`, `imagen/productos/*`, `Models/Producto.php`, `Views/publico/productos.php` | 37 productos con imágenes verificadas, carpetas `accesorios/`, `escritorio/` y `portatiles/`, y catálogo agrupado por categoría. |
+| 10 | Los reportes no tenían resumen ni exportación; la configuración apuntaba a `dbAlexasys`, pero la base real es `dbalexasys`. | `composer.json`, `composer.lock`, `Controllers/reportes.php`, `Views/reportes.view.php`, `Views/reportes-pdf.view.php`, `Core/bootstrap.php`, `config/configuracion.php`, `Core/Database/conexion.php` | Dompdf 3.1 instalado con Composer; 11 informes con tarjetas de resumen y botón **Exportar PDF** que conserva los filtros; conexión y scripts SQL unificados en `dbalexasys`. |
 
 ## 3. Estado por módulo
 
@@ -55,7 +59,7 @@ la bandeja **Consultas web** del panel (solo Gerente).
 | 15. Repuestos de servicio | Completo | Listado HTTP 200 |
 | 16. Pagos de servicio | Completo | Formulario HTTP 200; rechazo de monto 0, negativo y superior al saldo; pago válido y saldo 0 verificados |
 | 17. Garantías | Completo | Listado y formulario HTTP 200 |
-| 18. Reportes | Completo | Reporte general y filtrado por fechas HTTP 200 |
+| 18. Reportes | Completo | 11 informes HTTP 200; tarjetas de resumen; exportación PDF válida (`%PDF-`, `application/pdf`) para los 11 tipos, con filtros conservados |
 | 19. Usuarios y roles | Completo | Formulario HTTP 200 (solo Gerente); permisos aplicados |
 | Bandeja de consultas web (Gerente) | Completo | HTTP 200; 3 mensajes guardados visibles; sin errores de consola |
 
@@ -74,7 +78,7 @@ la bandeja **Consultas web** del panel (solo Gerente).
 
 ## 5. Base de datos e integridad
 
-- 20 tablas en `dbAlexasys`, incluida `consultas_contacto`.
+- 20 tablas en `dbalexasys`, incluida `consultas_contacto`.
 - Catálogo: **37 productos** (8 computadoras de escritorio, 9 laptops, 13
   accesorios, 6 componentes/repuestos y 1 impresora).
 - Comprobaciones ejecutadas:
@@ -95,8 +99,10 @@ la bandeja **Consultas web** del panel (solo Gerente).
 3. Prueba de carga de imágenes de producto (JPG/PNG/WEBP, límite 2 MB).
 4. Configurar credenciales de producción y desactivar `demo.activo`.
 5. Sustituir los datos de demostración por datos reales antes de la entrega.
-6. Ampliar la suite de humo (`tests/smoke.ps1`, 38 comprobaciones) con pruebas
+6. Ampliar la suite de humo (`tests/smoke.ps1`, 52 comprobaciones) con pruebas
    de alta, edición y anulación; valorar PHPUnit para pruebas unitarias.
-7. Configurar el relay SMTP de XAMPP para que las notificaciones del formulario
+7. Revisar visualmente los PDF exportados en un lector externo para confirmar
+   saltos de página y legibilidad en tablas extensas.
+8. Configurar el relay SMTP de XAMPP para que las notificaciones del formulario
    lleguen al correo destino. Mientras no haya SMTP, las consultas se guardan y
    se leen en la bandeja **Consultas web**.

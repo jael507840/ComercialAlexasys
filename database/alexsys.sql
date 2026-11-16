@@ -1,10 +1,10 @@
 -- =====================================================================
 -- SISTEMA ALEX@SYS
--- Base de datos: dbAlexasys (19 tablas)
+-- Base de datos: dbalexasys (20 tablas)
 -- Motor: InnoDB / MySQL 8 - MariaDB 10.4+
 -- =====================================================================
 -- IMPORTANTE:
---   Este script REINICIA las 19 tablas del esquema dbAlexasys.
+--   Este script REINICIA las 20 tablas del esquema dbalexasys.
 --   No toca otras bases de datos del servidor.
 --   Los usuarios y datos incluidos son DEMOSTRATIVOS.
 --   Cambie las contraseñas antes de operar en producción.
@@ -14,10 +14,10 @@ SET NAMES utf8mb4;
 SET time_zone = '-04:00';
 SET FOREIGN_KEY_CHECKS = 0;
 
-CREATE DATABASE IF NOT EXISTS dbAlexasys
+CREATE DATABASE IF NOT EXISTS dbalexasys
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
-USE dbAlexasys;
+USE dbalexasys;
 
 DROP TABLE IF EXISTS garantias, pagos_servicio, repuestos_servicio,
     detalle_servicio, ordenes_servicio, equipos_cliente, pagos_venta,

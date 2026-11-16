@@ -1,0 +1,20 @@
+{
+    "name": "alexsys/comercial-alexsys",
+    "description": "Sistema de Informacion Web para la gestion de clientes, ventas, inventario y servicio tecnico Alex@sys",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.2",
+        "ext-dom": "*",
+        "ext-mbstring": "*",
+        "ext-pdo": "*",
+        "dompdf/dompdf": "^3.1"
+    },
+    "config": {
+        "platform": {
+            "php": "8.2.12"
+        },
+        "sort-packages": true,
+        "optimize-autoloader": true
+    }
+}

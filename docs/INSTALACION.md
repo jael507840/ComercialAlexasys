@@ -2,7 +2,8 @@
 
 ## 1. Requisitos
 
-- PHP 8.2 o superior con `pdo_mysql`, `mbstring` y `fileinfo`.
+- PHP 8.2 o superior con `pdo_mysql`, `mbstring`, `dom` y `fileinfo`.
+- Composer 2 para instalar Dompdf (exportación de reportes a PDF).
 - MySQL 8 o MariaDB 10.4 o superior.
 - Apache/Nginx o el servidor embebido de PHP.
 - Permisos de escritura en `logs/` e `imagen/productos/`.
@@ -26,13 +27,24 @@
    C:\xampp\mysql\bin\mysql.exe -u root < database\alexsys.sql
    ```
 
-4. Revise `config/configuracion.php`:
+4. Instale las dependencias de Composer (Dompdf):
+
+   ```powershell
+   cd C:\xampp\htdocs\alexsys
+   $env:PATH = "C:\xampp\php;" + $env:PATH
+   composer install --no-interaction --no-progress
+   ```
+
+   `composer.json` fija la plataforma en PHP 8.2.12. Si `php` ya está en el
+   `PATH`, basta con `composer install`.
+
+5. Revise `config/configuracion.php`:
 
    ```php
    'db' => [
        'host'     => '127.0.0.1',
        'puerto'   => 3306,
-       'nombre'   => 'dbAlexasys',
+       'nombre'   => 'dbalexasys',
        'usuario'  => 'root',
        'password' => '',
        'charset'  => 'utf8mb4',
@@ -60,7 +72,7 @@
    **Consultas web** dentro del panel. Configure el servidor SMTP localmente; no
    guarde contraseñas de correo en el repositorio.
 
-5. Abra `http://localhost/alexsys/index.php` o, con el servidor embebido:
+6. Abra `http://localhost/alexsys/index.php` o, con el servidor embebido:
 
    ```powershell
    C:\xampp\php\php.exe -S 127.0.0.1:8080 -t .
@@ -83,7 +95,7 @@ datos reales.
 
 1. Cambie `app.entorno` a `produccion`.
 2. Desactive `demo.activo` para ocultar el aviso de datos de demostración.
-3. Use un usuario de MySQL con permisos mínimos sobre `dbAlexasys` (no `root`).
+3. Use un usuario de MySQL con permisos mínimos sobre `dbalexasys` (no `root`).
 4. Saque `config/`, `logs/`, `database/` y `tests/` del directorio público.
 5. Configure HTTPS y respaldos automáticos.
 6. Verifique que `logs/` e `imagen/productos/` sean escribibles solo por el
@@ -98,6 +110,7 @@ index.php?ruta=login
 index.php?ruta=index
 index.php?ruta=clientes
 index.php?ruta=ventas&accion=nuevo
+index.php?ruta=reportes&tipo_reporte=ventas&formato=pdf
 index.php?pagina=productos
 ```
 
@@ -113,3 +126,5 @@ desconocido se redirige al inicio.
 | Página en blanco | Error PHP | Revise `logs/php-error.log` |
 | Iconos o fotos no cargan | Ruta o archivo faltante | Verifique `imagen/` y `imagen/FUENTES.md` |
 | No se puede subir imagen | Tamaño mayor a 2 MB o formato no permitido | Use JPG, PNG o WEBP de hasta 2 MB |
+| El botón **Exportar PDF** indica que faltan dependencias | No se ejecutó `composer install` o falta `vendor/autoload.php` | Ejecute `composer install` con el PHP 8.2 de XAMPP en el `PATH` |
+| Error de Dompdf por `ext-dom` o `ext-mbstring` | Extensiones PHP deshabilitadas | Habilite `dom` y `mbstring` en `php.ini` y reinicie el servidor |

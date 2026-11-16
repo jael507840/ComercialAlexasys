@@ -2,9 +2,10 @@
 
 **Última ejecución de humo:** 16/11/2026
 **Entorno:** Windows, PHP 8.2.12 (`C:\xampp\php\php.exe`), MariaDB 10.4.32,
-servidor embebido `php -S 127.0.0.1:8080 -t .`, base `dbAlexasys` (20 tablas).
+servidor embebido `php -S 127.0.0.1:8080 -t .`, base `dbalexasys` (20 tablas).
 **Alcance:** prueba de humo de navegación y permisos, lint de PHP, integridad de
-inventario, saldos y flujo de pagos de servicio.
+inventario, saldos, flujo de pagos de servicio y exportación de reportes a PDF
+con Dompdf 3.1.6.
 
 > Las pruebas son manuales/semiautomáticas y se ejecutaron contra el entorno
 > local. No se declaran pruebas no ejecutadas.
@@ -21,7 +22,11 @@ Start-Process "C:\xampp\mysql\bin\mysqld.exe" `
 cd MVC1
 C:\xampp\mysql\bin\mysql.exe -u root < database\alexsys.sql
 
-# 3. Iniciar el servidor de desarrollo
+# 3. Instalar dependencias (Dompdf)
+$env:PATH = "C:\xampp\php;" + $env:PATH
+composer install --no-interaction --no-progress
+
+# 4. Iniciar el servidor de desarrollo
 C:\xampp\php\php.exe -S 127.0.0.1:8080 -t .
 ```
 
@@ -33,7 +38,8 @@ Get-ChildItem -Recurse -Filter *.php | ForEach-Object {
 }
 ```
 
-**Resultado:** 92 archivos PHP revisados, **0 errores de sintaxis**.
+**Resultado:** 93 archivos PHP revisados (sin contar `vendor/`), **0 errores de
+sintaxis**.
 
 ## 3. Prueba de humo
 
@@ -48,12 +54,13 @@ la imagen de ubicación, el catálogo agrupado, el formulario de contacto
 formulario no guardan consultas ni envían correos. La salida completa quedó en
 `tests/smoke-resultado.txt`.
 
-**Resultado:** **38 comprobaciones PASS, 0 FAIL.**
+**Resultado:** **52 comprobaciones PASS, 0 FAIL.**
 
 | Grupo | Comprobaciones | Resultado |
 |---|---|---|
 | Dashboard por rol | 9 (estado, perfil, accesos e iconos) | 9 PASS |
 | Módulos del panel (Gerente) | 18 | 18 PASS |
+| Reportes, resumen y exportación PDF | 14 (resumen, botón, 11 informes y PDF filtrado) | 14 PASS |
 | Páginas públicas y formulario de contacto | 9 | 9 PASS |
 | Permisos denegados (Vendedor/Técnico) | 2 | 2 PASS |
 
@@ -68,6 +75,9 @@ Detalle destacado:
 | Avisos PHP en las respuestas HTTP | 0 (`Warning`, `Fatal error`, `Notice`, `Deprecated`) |
 | Vendedor accede a `compras` | Redirigido al dashboard |
 | Técnico accede a `ventas` | Redirigido al dashboard |
+| Reporte de ventas | HTTP 200, 25 414 bytes; tarjetas Registros 2, Total vendido Bs 4.920,00, Pagado Bs 4.920,00, Saldo Bs 0,00 |
+| Exportación PDF (11 informes) | HTTP 200, `Content-Type: application/pdf`, firma `%PDF-`; tamaños entre 24 189 y 37 120 bytes |
+| PDF con filtros de periodo | HTTP 200, 28 099 bytes, `%PDF-`; filtros `desde`/`hasta` conservados en la URL |
 
 Comprobaciones adicionales del cambio:
 
@@ -83,6 +93,16 @@ Comprobaciones adicionales del cambio:
   pendientes y el buzón `contacto@alexsys.bo`; la página no generó errores de
   consola.
 - Los archivos PHP modificados pasaron `php -l`.
+- Composer instaló `dompdf/dompdf` 3.1.6 y sus dependencias; `vendor/autoload.php`
+  carga las clases `Dompdf\Dompdf` y `Dompdf\Options`.
+- `Views/reportes-pdf.view.php` genera el documento A4 horizontal con cabecera,
+  filtros aplicados, tarjetas de resumen, tabla paginada y pie con número de
+  página; todas las respuestas se validaron por firma `%PDF-` y tipo MIME.
+- El botón **Exportar PDF** conserva `tipo_reporte`, periodo, búsqueda, cliente,
+  proveedor, categoría, estado, tipo y stock bajo.
+- La inspección visual del PDF en un lector externo quedó pendiente: el
+  navegador embebido no previsualiza la descarga porque la respuesta usa
+  `Content-Disposition: attachment`. La validación fue por HTTP, firma y tamaño.
 - El envío real de correo no se probó: XAMPP no tiene un relay SMTP local activo.
   Las consultas se guardan aunque la notificación por correo falle y se leen en
   la bandeja del panel.
@@ -154,5 +174,7 @@ Estas pruebas **no** se ejecutaron en esta revisión y quedan como trabajo futur
 3. Carga de imágenes de producto (JPG/PNG/WEBP, límite 2 MB).
 4. Restauración de un respaldo en un entorno limpio.
 5. Pruebas de concurrencia y doble envío de formularios.
-6. Ampliar la suite de humo (`tests/smoke.ps1`) y valorar PHPUnit para pruebas
-   unitarias.
+6. Revisar visualmente los PDF en un lector externo (Adobe Acrobat, Edge o
+   Chrome) para confirmar saltos de página y legibilidad con tablas extensas.
+7. Ampliar la suite de humo (`tests/smoke.ps1`) con altas, ediciones y
+   anulaciones; valorar PHPUnit para pruebas unitarias.

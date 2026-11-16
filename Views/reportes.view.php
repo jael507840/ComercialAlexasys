@@ -7,6 +7,20 @@ $camposMoneda = [
     'margen', 'monto',
 ];
 $camposCantidad = ['items', 'total_items', 'stock_actual', 'stock_minimo', 'total_ordenes'];
+$parametrosPdf = [
+    'tipo_reporte' => $tipoReporte,
+    'desde' => $filtros['desde'],
+    'hasta' => $filtros['hasta'],
+    'q' => $filtros['busqueda'],
+    'cliente' => $filtros['id_cliente'] ?: '',
+    'proveedor' => $filtros['id_proveedor'] ?: '',
+    'categoria' => $filtros['id_categoria'] ?: '',
+    'estado' => $filtros['estado'],
+    'tipo' => $filtros['tipo'],
+    'bajo' => $filtros['solo_bajo'] ? '1' : '',
+    'formato' => 'pdf',
+];
+$parametrosPdf = array_filter($parametrosPdf, static fn($valor) => $valor !== '' && $valor !== 0);
 ?>
 
 <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
@@ -14,9 +28,17 @@ $camposCantidad = ['items', 'total_items', 'stock_actual', 'stock_minimo', 'tota
         <h1 class="titulo-pagina h3 mb-1">Reportes</h1>
         <p class="text-secondary mb-0 small">Seleccione el informe y aplique los filtros disponibles.</p>
     </div>
-    <a class="btn btn-outline-secondary btn-sm" href="<?= url('index') ?>">
-        <i class="fa-solid fa-arrow-left me-1"></i> Volver al panel
-    </a>
+    <div class="d-flex flex-wrap gap-2">
+        <?php if ($errores === []): ?>
+            <a class="btn btn-danger btn-sm" href="<?= url('reportes', $parametrosPdf) ?>"
+               title="Descargar el informe actual en PDF">
+                <i class="fa-solid fa-file-pdf me-1"></i> Exportar PDF
+            </a>
+        <?php endif; ?>
+        <a class="btn btn-outline-secondary btn-sm" href="<?= url('index') ?>">
+            <i class="fa-solid fa-arrow-left me-1"></i> Volver al panel
+        </a>
+    </div>
 </div>
 
 <?php if ($errores !== []): ?>
@@ -167,10 +189,34 @@ $camposCantidad = ['items', 'total_items', 'stock_actual', 'stock_minimo', 'tota
     </div>
 </div>
 
+<div class="row g-3 mb-4">
+    <div class="col-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="small text-secondary">Registros</div>
+                <div class="fs-4 fw-bold text-primary"><?= (int) ($resumen['registros'] ?? count($datos)) ?></div>
+                <div class="small text-secondary"><?= e($reportesDisponibles[$tipoReporte]) ?></div>
+            </div>
+        </div>
+    </div>
+    <?php foreach (($resumen['totales'] ?? []) as $total): ?>
+        <div class="col-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="small text-secondary"><?= e($total['etiqueta']) ?></div>
+                    <div class="fs-5 fw-bold text-dark"><?= e($total['valor']) ?></div>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>
+
 <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
+    <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
         <span><i class="fa-solid fa-table-list me-2 text-primary"></i><?= e($reportesDisponibles[$tipoReporte]) ?></span>
-        <span class="small text-secondary"><?= count($datos) ?> resultado(s)</span>
+        <span class="small text-secondary">
+            <?= count($datos) ?> resultado(s) · <?= e(implode(' · ', $filtrosTexto ?? [])) ?>
+        </span>
     </div>
     <div class="tabla-scroll">
         <table class="table table-alex table-hover mb-0">

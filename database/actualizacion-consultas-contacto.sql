@@ -1,6 +1,6 @@
 -- Agrega almacenamiento de consultas del formulario de contacto sin
 -- modificar ni eliminar los datos existentes.
-USE dbAlexasys;
+USE dbalexasys;
 
 CREATE TABLE IF NOT EXISTS consultas_contacto (
     id_consulta          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,

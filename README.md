@@ -8,15 +8,18 @@ MariaDB, sin frameworks de backend.
 
 | Componente | Versión / uso |
 |---|---|
-| PHP | 8.2 o superior (probado con 8.2.12, extensiones `pdo_mysql`, `mbstring`, `fileinfo`) |
-| Base de datos | MySQL 8 / MariaDB 10.4+ (probado con MariaDB 10.4.32) |
+| PHP | 8.2 o superior (probado con 8.2.12, extensiones `pdo_mysql`, `mbstring`, `dom`, `fileinfo`) |
+| Base de datos | MySQL 8 / MariaDB 10.4+ (probado con MariaDB 10.4.32, base `dbalexasys`) |
 | Acceso a datos | PDO con consultas preparadas reales (`ATTR_EMULATE_PREPARES = false`) |
+| Dependencias | Composer 2 (`composer.json` / `composer.lock`) |
+| PDF | Dompdf 3.1 (`dompdf/dompdf`) instalado con Composer |
 | Interfaz | Bootstrap 5 y Font Awesome 6 locales (`assets/vendor`) |
 | Servidor de desarrollo | `php -S 127.0.0.1:8080 -t .` |
 
 ## 2. Requisitos
 
-- PHP 8.2+ con `pdo_mysql`.
+- PHP 8.2+ con `pdo_mysql`, `mbstring`, `dom` y `fileinfo`.
+- Composer 2 para instalar Dompdf y sus dependencias.
 - MySQL o MariaDB en ejecución.
 - Permisos de escritura en `logs/` e `imagen/productos/` (carga de imágenes).
 - Navegador moderno.
@@ -31,23 +34,39 @@ MariaDB, sin frameworks de backend.
    C:\xampp\mysql\bin\mysql.exe -u root < database\alexsys.sql
    ```
 
-   El script crea `dbAlexasys`, sus 20 tablas y datos de ejemplo (37 productos).
+   El script crea `dbalexasys`, sus 20 tablas y datos de ejemplo (37 productos).
    **Es destructivo**: elimina y vuelve a crear las tablas del esquema.
-3. Ajuste las credenciales en `config/configuracion.php` (`db.host`, `db.puerto`,
+3. Instale las dependencias de Composer (Dompdf se usa para exportar reportes):
+
+   ```powershell
+   cd MVC1
+   composer install --no-interaction --no-progress
+   ```
+
+   Si `php` no está en el `PATH`, ejecute Composer con el PHP de XAMPP:
+
+   ```powershell
+   $env:PATH = "C:\xampp\php;" + $env:PATH
+   composer install --no-interaction --no-progress
+   ```
+
+   `composer.json` fija la plataforma en PHP 8.2.12 para que las dependencias
+   funcionen con el PHP del servidor.
+4. Ajuste las credenciales en `config/configuracion.php` (`db.host`, `db.puerto`,
    `db.nombre`, `db.usuario`, `db.password`).
    La dirección destinataria del formulario se configura en
    `contacto.correo_destino` y el envío de correo se activa o desactiva con
    `contacto.notificar_por_correo`. Para una base existente, aplique
    `database/actualizacion-consultas-contacto.sql` y
    `database/actualizacion-catalogo.sql` sin reimportar el esquema.
-4. Inicie el servidor:
+5. Inicie el servidor:
 
    ```powershell
    cd MVC1
    C:\xampp\php\php.exe -S 127.0.0.1:8080 -t .
    ```
 
-5. Abra `http://127.0.0.1:8080/index.php`.
+6. Abra `http://127.0.0.1:8080/index.php`.
 
 > En producción, coloque `config/`, `logs/`, `database/` y `tests/` fuera del
 > directorio público o bloquéelos desde el servidor web. Los archivos
@@ -71,6 +90,9 @@ demostración se controla con `demo.activo` en `config/configuracion.php`.
 MVC1/
 ├── index.php                 Front controller (?ruta=modulo)
 ├── .htaccess                 Reglas de escritura y protecciones
+├── composer.json             Dependencias (Dompdf) y plataforma PHP
+├── composer.lock             Versiones bloqueadas de las dependencias
+├── vendor/                   Paquetes instalados por Composer (autoload)
 ├── Core/
 │   ├── bootstrap.php         Configuración, sesión, helpers, permisos y vistas
 │   └── Database/conexion.php Conexión PDO única (singleton)
@@ -78,6 +100,7 @@ MVC1/
 ├── Controllers/              Un controlador por módulo
 ├── Models/                   Entidades y consultas PDO
 ├── Views/                    Vistas del panel y plantillas parciales
+│   ├── reportes-pdf.view.php Documento PDF de reportes (Dompdf)
 │   └── publico/              Inicio, Nosotros, Productos, Servicios, Contactos
 ├── assets/                   CSS, JS y librerías locales
 ├── imagen/                   Logo, banners, fotos e iconos SVG
@@ -107,7 +130,7 @@ MVC1/
 15. Repuestos usados en servicio.
 16. Pagos de servicios.
 17. Garantías.
-18. Reportes.
+18. Reportes: 11 informes con filtros, tarjetas de resumen y exportación a PDF.
 19. Usuarios y roles.
 20. Bandeja **Consultas web** (solo Gerente): lee los mensajes del formulario
     público aunque el servidor no tenga correo configurado.
@@ -137,7 +160,25 @@ MVC1/
 - Control de sesión por inactividad y bloqueo temporal por intentos fallidos.
 - Validación de archivos subidos (tipo, tamaño y dimensiones de imagen).
 
-## 9. Pruebas
+## 9. Reportes y exportación a PDF
+
+El módulo **Reportes** ofrece 11 informes: ventas, compras, clientes, productos,
+costos y márgenes, pagos de ventas, pagos de servicios, órdenes de servicio,
+equipos de clientes, garantías e inventario.
+
+- Cada informe muestra tarjetas con el número de registros y los totales
+  calculados desde MySQL.
+- Los filtros aplicados (periodo, búsqueda, cliente, proveedor, categoría,
+  estado, tipo y stock bajo) se conservan al exportar.
+- El botón **Exportar PDF** descarga el informe filtrado mediante
+  `index.php?ruta=reportes&...&formato=pdf`.
+- El PDF se genera con **Dompdf** (instalado por Composer) a partir de
+  `Views/reportes-pdf.view.php`: formato A4 horizontal, cabecera de marca,
+  resumen, tabla con filas alternas y pie con número de página.
+- Si faltan las dependencias, la aplicación lo indica y recuerda ejecutar
+  `composer install` en lugar de mostrar un error fatal.
+
+## 10. Pruebas
 
 El detalle de las pruebas ejecutadas y su evidencia está en
 [`TESTING.md`](TESTING.md). El estado de avance por módulo está en
@@ -149,7 +190,7 @@ La suite de humo se ejecuta con el servidor de desarrollo activo:
 powershell -ExecutionPolicy Bypass -File tests\smoke.ps1
 ```
 
-## 10. Publicación
+## 11. Publicación
 
 Este proyecto necesita **PHP 8.2+ y MySQL/MariaDB**. Por eso **GitHub Pages no
 puede mostrarlo**: Pages solo sirve archivos estáticos (HTML, CSS, JS) y no
@@ -159,9 +200,12 @@ aun así la URL de Pages devolver 404.
 Para publicarlo elija un hosting con PHP y MySQL, por ejemplo:
 
 1. **XAMPP/local** para la demostración: copie `MVC1` en `htdocs`, importe
-   `database/alexsys.sql` e ingrese por `http://localhost/MVC1/`.
+   `database/alexsys.sql`, ejecute `composer install` e ingrese por
+   `http://localhost/MVC1/`.
 2. **Hosting PHP compartido** (cPanel): suba el contenido de `MVC1`, cree la
-   base, importe el SQL y ajuste `config/configuracion.php`.
+   base `dbalexasys`, importe el SQL, ejecute `composer install` y ajuste
+   `config/configuracion.php`. Verifique que el hosting permita `ext-dom` y
+   `ext-mbstring`; sin ellas Dompdf no puede generar los PDF.
 3. **Servicios con contenedores** (Railway, Render, Fly.io): configure un
    servicio PHP 8.2 y una base MySQL/MariaDB; use las variables del proveedor en
    `config/configuracion.php`.
@@ -169,7 +213,7 @@ Para publicarlo elija un hosting con PHP y MySQL, por ejemplo:
 En producción desactive `demo.activo`, cambie las contraseñas de demostración y
 mantenga `config/`, `logs/`, `database/` y `tests/` fuera del directorio público.
 
-## 11. Documentación
+## 12. Documentación
 
 - [`docs/INSTALACION.md`](docs/INSTALACION.md): instalación y puesta en marcha.
 - [`docs/MANUAL_USUARIO.md`](docs/MANUAL_USUARIO.md): uso por rol.

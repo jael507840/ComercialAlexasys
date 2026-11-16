@@ -459,6 +459,27 @@ function parcial(string $nombre, array $variables = []): void
 }
 
 /**
+ * Devuelve el HTML de una vista sin enviarlo al navegador. Se usa para
+ * generar documentos (por ejemplo, el PDF de reportes) a partir de una vista.
+ */
+function contenido_vista(string $vista, array $variables = []): string
+{
+    $archivo = ROOT_PATH . '/Views/' . $vista . '.view.php';
+    if (!is_file($archivo)) {
+        throw new RuntimeException('No se encontró la vista solicitada: ' . $vista);
+    }
+    extract($variables, EXTR_SKIP);
+    ob_start();
+    try {
+        require $archivo;
+        return (string) ob_get_clean();
+    } catch (Throwable $e) {
+        ob_end_clean();
+        throw $e;
+    }
+}
+
+/**
  * Guarda una imagen subida dentro de imagen/productos y devuelve su ruta
  * relativa. Solo acepta JPG, PNG y WEBP de hasta 2 MB.
  */

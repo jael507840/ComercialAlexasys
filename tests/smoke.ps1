@@ -68,6 +68,61 @@ foreach ($ruta in $rutas) {
     }
 }
 
+# Reportes: resumen visible y exportacion PDF de todos los informes.
+$reporte = Invoke-WebRequest "$Base`?ruta=reportes&tipo_reporte=ventas" -WebSession $gerente -UseBasicParsing -TimeoutSec 30
+$enlacePdf = [regex]::Match($reporte.Content, 'href="([^"]*formato=pdf[^"]*)"').Groups[1].Value
+Comprobar "reportes/resumen" (
+    $reporte.StatusCode -eq 200 -and (SinAvisos $reporte.Content) -and
+    $reporte.Content -match 'Total vendido' -and
+    $reporte.Content -match 'Pagado' -and
+    $reporte.Content -match 'Saldo' -and
+    $reporte.Content -match 'Registros'
+) "HTTP $($reporte.StatusCode), tarjetas de resumen"
+Comprobar "reportes/boton-pdf" (
+    $enlacePdf -match 'tipo_reporte=ventas' -and $enlacePdf -match 'formato=pdf'
+) $enlacePdf
+
+$tiposReporte = @(
+    "ventas", "compras", "clientes", "productos", "costos", "pagos_ventas",
+    "pagos_servicios", "servicios", "equipos", "garantias", "inventario"
+)
+foreach ($tipo in $tiposReporte) {
+    try {
+        $pdf = Invoke-WebRequest "$Base`?ruta=reportes&tipo_reporte=$tipo&formato=pdf" `
+            -WebSession $gerente -UseBasicParsing -TimeoutSec 60
+        $firma = if ($pdf.Content -is [byte[]]) {
+            [Text.Encoding]::ASCII.GetString($pdf.Content[0..4])
+        } else {
+            ([string]$pdf.Content).Substring(0, 5)
+        }
+        Comprobar "reportes/pdf/$tipo" (
+            $pdf.StatusCode -eq 200 -and
+            $firma -eq '%PDF-' -and
+            [string]$pdf.Headers['Content-Type'] -match 'application/pdf' -and
+            $pdf.RawContentLength -gt 1000
+        ) "HTTP $($pdf.StatusCode), $($pdf.RawContentLength) bytes, $firma"
+    } catch {
+        Comprobar "reportes/pdf/$tipo" $false $_.Exception.Message
+    }
+}
+
+# El PDF debe respetar los filtros del informe (periodo valido).
+try {
+    $pdfFiltrado = Invoke-WebRequest "$Base`?ruta=reportes&tipo_reporte=ventas&desde=2026-01-01&hasta=2026-12-31&formato=pdf" `
+        -WebSession $gerente -UseBasicParsing -TimeoutSec 60
+    $firmaFiltrada = if ($pdfFiltrado.Content -is [byte[]]) {
+        [Text.Encoding]::ASCII.GetString($pdfFiltrado.Content[0..4])
+    } else {
+        ([string]$pdfFiltrado.Content).Substring(0, 5)
+    }
+    Comprobar "reportes/pdf/filtrado" (
+        $pdfFiltrado.StatusCode -eq 200 -and $firmaFiltrada -eq '%PDF-' -and
+        [string]$pdfFiltrado.Headers['Content-Type'] -match 'application/pdf'
+    ) "HTTP $($pdfFiltrado.StatusCode), $($pdfFiltrado.RawContentLength) bytes, filtros conservados"
+} catch {
+    Comprobar "reportes/pdf/filtrado" $false $_.Exception.Message
+}
+
 # Paginas publicas: estado y carga de iconos.
 foreach ($pagina in @("inicio", "nosotros", "productos", "servicios", "contactos")) {
     $r = Invoke-WebRequest "$Base`?pagina=$pagina" -WebSession $gerente -UseBasicParsing
