@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="Categorias">
+  <rect width="48" height="48" rx="12" fill="#f3e8ff"/>
+  <path d="M24 8l14 7-14 7-14-7 14-7Z" fill="none" stroke="#7e22ce" stroke-width="2.6" stroke-linejoin="round"/>
+  <path d="M10 24l14 7 14-7" fill="none" stroke="#a855f7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M10 31l14 7 14-7" fill="none" stroke="#c084fc" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

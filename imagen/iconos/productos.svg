@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="Productos">
+  <rect width="48" height="48" rx="12" fill="#eaf2ff"/>
+  <path d="M10 17l14-6 14 6v14l-14 6-14-6V17Z" fill="none" stroke="#1d4ed8" stroke-width="2.6" stroke-linejoin="round"/>
+  <path d="M10 17l14 6 14-6M24 23v14" fill="none" stroke="#1d4ed8" stroke-width="2.6" stroke-linejoin="round"/>
+  <path d="M17 20.5l14-6" stroke="#3b82f6" stroke-width="2.2" stroke-linecap="round"/>
+</svg>

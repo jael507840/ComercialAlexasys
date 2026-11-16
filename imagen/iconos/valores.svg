@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Valores">
+  <path d="M256 58l154 52v112c0 96-64 162-154 194-90-32-154-98-154-194V110l154-52Z"
+        fill="#7bd389" stroke="#000" stroke-width="28" stroke-linejoin="round"/>
+  <path d="M186 262l48 48 100-112" fill="none" stroke="#000" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

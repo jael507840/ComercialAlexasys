@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="Reportes">
+  <rect width="48" height="48" rx="12" fill="#eef2ff"/>
+  <path d="M10 38V10M10 38h30" fill="none" stroke="#4338ca" stroke-width="2.6" stroke-linecap="round"/>
+  <rect x="15" y="26" width="5" height="8" rx="1.2" fill="#6366f1"/>
+  <rect x="23" y="19" width="5" height="15" rx="1.2" fill="#6366f1"/>
+  <rect x="31" y="13" width="5" height="21" rx="1.2" fill="#818cf8"/>
+</svg>

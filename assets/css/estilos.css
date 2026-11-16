@@ -1,0 +1,423 @@
+/* ==========================================================================
+   Alex@sys - Hoja de estilos principal
+   Paleta: azul corporativo (#1d4ed8), cian técnico (#06b6d4),
+   gris pizarra (#0f172a / #64748b) y fondos suaves.
+   ========================================================================== */
+
+:root {
+    --alex-azul: #1d4ed8;
+    --alex-azul-oscuro: #16399e;
+    --alex-cian: #06b6d4;
+    --alex-tinta: #0f172a;
+    --alex-gris: #64748b;
+    --alex-fondo: #f4f7fb;
+    --alex-borde: #e2e8f0;
+    --alex-sidebar: #0b1220;
+    --alex-sidebar-suave: #16233c;
+    --alex-radio: 0.9rem;
+    --alex-sombra: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+* { scrollbar-width: thin; }
+
+body {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    background: var(--alex-fondo);
+    color: var(--alex-tinta);
+    min-height: 100vh;
+}
+
+a { text-decoration: none; }
+
+/* --------------------------------------------------------------------------
+   Marca
+   -------------------------------------------------------------------------- */
+.marca-logo { height: 44px; width: auto; }
+.marca-logo-sm { height: 34px; width: auto; }
+
+/* Logo de la tienda sobre fondos oscuros: el archivo tiene fondo blanco. */
+.marca-logo-fondo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.6rem;
+    background: #fff;
+    border-radius: 0.7rem;
+    box-shadow: 0 4px 14px rgba(2, 6, 23, 0.18);
+    max-width: 100%;
+}
+
+.marca-logo-fondo .marca-logo { height: 38px; }
+.sidebar-marca .marca-logo-fondo { width: 100%; }
+
+.texto-degradado {
+    background: linear-gradient(90deg, var(--alex-azul), var(--alex-cian));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   Barra pública
+   -------------------------------------------------------------------------- */
+.navbar-alex {
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--alex-borde);
+    box-shadow: 0 2px 18px rgba(15, 23, 42, 0.05);
+}
+
+.navbar-alex .nav-link {
+    color: var(--alex-tinta);
+    font-weight: 600;
+    padding: 0.5rem 0.9rem;
+    border-radius: 0.5rem;
+}
+
+.navbar-alex .nav-link:hover,
+.navbar-alex .nav-link.active {
+    color: var(--alex-azul);
+    background: #eef4ff;
+}
+
+.hero {
+    position: relative;
+    background: linear-gradient(100deg, rgba(8, 20, 48, 0.92) 10%, rgba(12, 45, 110, 0.72) 55%, rgba(6, 182, 212, 0.35) 100%),
+                url("../../imagen/banners/hero-tienda.jpg") center/cover no-repeat;
+    color: #fff;
+    padding: 6.5rem 0 5rem;
+}
+
+.hero h1 { font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 800; line-height: 1.15; }
+.hero p { max-width: 620px; color: #dbeafe; }
+
+.seccion { padding: 4.5rem 0; }
+.seccion-titulo { font-weight: 800; letter-spacing: -0.02em; }
+.seccion-subtitulo { color: var(--alex-gris); max-width: 720px; }
+
+.tarjeta-servicio {
+    border: 1px solid var(--alex-borde);
+    border-radius: var(--alex-radio);
+    background: #fff;
+    overflow: hidden;
+    height: 100%;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.tarjeta-servicio:hover { transform: translateY(-4px); box-shadow: var(--alex-sombra); }
+.tarjeta-servicio img { height: 190px; object-fit: cover; width: 100%; }
+
+.tarjeta-producto img {
+    height: 170px;
+    object-fit: contain;
+    background: #f8fafc;
+    padding: 0.75rem;
+}
+
+/* Encabezado de cada grupo de productos en el catálogo público. */
+.grupo-catalogo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-bottom: 0.6rem;
+    margin-bottom: 1.4rem;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.grupo-catalogo-titulo {
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin: 0;
+}
+
+.icono-servicio {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef4ff;
+    color: var(--alex-azul);
+    font-size: 1.4rem;
+}
+
+/* Iconos ilustrados de la carpeta imagen/iconos */
+.icono-tarjeta {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+    display: block;
+}
+
+.icono-nosotros {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    display: block;
+}
+
+/* Accesos rápidos del panel */
+.acceso-rapido {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    height: 100%;
+    padding: 0.85rem 0.95rem;
+    border: 1px solid var(--alex-borde);
+    border-radius: var(--alex-radio);
+    background: #fff;
+    color: var(--alex-tinta);
+    transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+
+.acceso-rapido:hover {
+    transform: translateY(-2px);
+    border-color: #bfdbfe;
+    box-shadow: var(--alex-sombra);
+    color: var(--alex-tinta);
+}
+
+.acceso-rapido img {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    object-fit: contain;
+}
+
+.acceso-rapido > span {
+    min-width: 0;
+}
+
+.acceso-rapido .titulo {
+    font-weight: 700;
+    font-size: 0.9rem;
+    line-height: 1.15;
+}
+
+.acceso-rapido .detalle {
+    color: var(--alex-gris);
+    font-size: 0.74rem;
+    line-height: 1.2;
+}
+
+.banner-servicio {
+    border-radius: var(--alex-radio);
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(90deg, rgba(8, 20, 48, 0.9), rgba(8, 20, 48, 0.35)),
+                url("../../imagen/banners/banner-servicio.jpg") center/cover no-repeat;
+    color: #fff;
+    padding: 3rem;
+}
+
+/* --------------------------------------------------------------------------
+   Acceso
+   -------------------------------------------------------------------------- */
+.pagina-login {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background: radial-gradient(900px 500px at 10% 10%, #12306e 0%, transparent 60%),
+                radial-gradient(700px 500px at 90% 90%, #0e7490 0%, transparent 55%),
+                #0b1220;
+    padding: 2rem 1rem;
+}
+
+.tarjeta-login {
+    width: min(960px, 100%);
+    border-radius: 1.2rem;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(2, 6, 23, 0.55);
+    background: #fff;
+}
+
+.panel-login-marca {
+    background: linear-gradient(150deg, #0b1220 0%, #16399e 55%, #0891b2 100%);
+    color: #fff;
+    padding: 3rem 2.6rem;
+}
+
+.panel-login-marca ul { list-style: none; padding: 0; margin: 0; }
+.panel-login-marca li { display: flex; gap: 0.7rem; align-items: flex-start; margin-bottom: 0.9rem; color: #dbeafe; }
+
+/* --------------------------------------------------------------------------
+   Panel administrativo
+   -------------------------------------------------------------------------- */
+.layout-admin { display: flex; min-height: 100vh; }
+
+.sidebar {
+    width: 276px;
+    flex: 0 0 276px;
+    background: var(--alex-sidebar);
+    color: #cbd5e1;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 1040;
+    transition: transform 0.22s ease;
+}
+
+.sidebar-marca { padding: 1.15rem 1.1rem; border-bottom: 1px solid rgba(148, 163, 184, 0.16); }
+.sidebar .menu-titulo {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: #64748b;
+    padding: 1.1rem 1.25rem 0.45rem;
+    font-weight: 700;
+}
+
+.sidebar .nav-link {
+    color: #cbd5e1;
+    border-radius: 0.65rem;
+    margin: 0.12rem 0.7rem;
+    padding: 0.56rem 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 0.92rem;
+    font-weight: 500;
+}
+
+.sidebar .nav-link i { width: 1.15rem; text-align: center; color: #7dd3fc; }
+
+/* Iconos ilustrados del menú lateral (imagen/iconos). */
+.sidebar .nav-link .menu-icono {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    object-fit: contain;
+    border-radius: 5px;
+}
+
+.sidebar .nav-link:hover { background: var(--alex-sidebar-suave); color: #fff; }
+
+.sidebar .nav-link.active {
+    background: linear-gradient(90deg, rgba(29, 78, 216, 0.95), rgba(8, 145, 178, 0.85));
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(29, 78, 216, 0.35);
+}
+
+.sidebar .nav-link.active i { color: #fff; }
+
+.contenido-admin { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+
+.topbar {
+    background: #fff;
+    border-bottom: 1px solid var(--alex-borde);
+    padding: 0.75rem 1.4rem;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
+.contenido-principal { padding: 1.6rem; flex: 1; }
+
+.titulo-pagina { font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.15rem; }
+.migaja { color: var(--alex-gris); font-size: 0.86rem; }
+
+/* Tarjetas métricas */
+.metrica {
+    border: 1px solid var(--alex-borde);
+    border-radius: var(--alex-radio);
+    background: #fff;
+    padding: 1.1rem 1.2rem;
+    height: 100%;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.metrica .etiqueta { color: var(--alex-gris); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+.metrica .valor { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em; }
+.metrica .icono {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 1.15rem;
+}
+
+.card { border: 1px solid var(--alex-borde); border-radius: var(--alex-radio); }
+.card-header { background: #fff; border-bottom: 1px solid var(--alex-borde); font-weight: 700; }
+
+/* Tablas */
+.table-alex { margin-bottom: 0; }
+.table-alex thead th {
+    background: #f8fafc;
+    color: #475569;
+    font-size: 0.74rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--alex-borde);
+    white-space: nowrap;
+    vertical-align: middle;
+}
+.table-alex tbody td { vertical-align: middle; }
+.table-alex tbody tr:hover { background: #f8fbff; }
+
+.tabla-scroll { overflow-x: auto; }
+
+.acciones-tabla { display: inline-flex; gap: 0.3rem; flex-wrap: nowrap; }
+
+/* Formularios */
+.form-label { font-weight: 600; font-size: 0.86rem; color: #334155; }
+.form-control, .form-select { border-color: #cbd5e1; border-radius: 0.6rem; }
+.form-control:focus, .form-select:focus {
+    border-color: var(--alex-azul);
+    box-shadow: 0 0 0 0.22rem rgba(29, 78, 216, 0.13);
+}
+.form-text { color: var(--alex-gris); }
+
+.requerido::after { content: " *"; color: #dc2626; }
+
+/* Botones */
+.btn { border-radius: 0.6rem; font-weight: 600; }
+.btn-primary { background: var(--alex-azul); border-color: var(--alex-azul); }
+.btn-primary:hover { background: var(--alex-azul-oscuro); border-color: var(--alex-azul-oscuro); }
+.btn-outline-primary { color: var(--alex-azul); border-color: var(--alex-azul); }
+.btn-outline-primary:hover { background: var(--alex-azul); }
+
+/* Estados y etiquetas */
+.badge-estado { font-weight: 700; padding: 0.4em 0.65em; border-radius: 0.5rem; font-size: 0.74rem; }
+
+.pie { background: #0b1220; color: #94a3b8; padding: 2.6rem 0 1.4rem; }
+.pie a { color: #cbd5e1; }
+.pie a:hover { color: #fff; }
+
+/* Impresión */
+@media print {
+    .sidebar, .topbar, .no-imprimir, .navbar-alex, .pie { display: none !important; }
+    .layout-admin { display: block; }
+    .contenido-principal { padding: 0; }
+    body { background: #fff; }
+    .card { border: 0; box-shadow: none; }
+    .table-alex thead th { background: #eee !important; -webkit-print-color-adjust: exact; }
+    a[href]::after { content: ""; }
+}
+
+/* Responsive */
+@media (max-width: 991.98px) {
+    .sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        transform: translateX(-100%);
+        box-shadow: 0 0 40px rgba(2, 6, 23, 0.5);
+    }
+    .sidebar.abierto { transform: translateX(0); }
+    .telon-sidebar {
+        position: fixed;
+        inset: 0;
+        background: rgba(2, 6, 23, 0.55);
+        z-index: 1035;
+        display: none;
+    }
+    .telon-sidebar.visible { display: block; }
+    .hero { padding: 4.5rem 0 3.5rem; }
+    .panel-login-marca { display: none; }
+}
+
+@media (max-width: 575.98px) {
+    .contenido-principal { padding: 1rem 0.85rem; }
+    .metricas .col-6 { width: 100%; }
+}

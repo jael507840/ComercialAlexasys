@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="Pagos">
+  <rect width="48" height="48" rx="12" fill="#dcfce7"/>
+  <rect x="8" y="15" width="32" height="22" rx="3.5" fill="none" stroke="#15803d" stroke-width="2.6"/>
+  <path d="M8 21h32" stroke="#15803d" stroke-width="2.6"/>
+  <path d="M27 26h9v6h-9z" fill="none" stroke="#22c55e" stroke-width="2.4" stroke-linejoin="round"/>
+  <circle cx="31.5" cy="29" r="1.6" fill="#15803d"/>
+</svg>

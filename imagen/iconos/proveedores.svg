@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="Proveedores">
+  <rect width="48" height="48" rx="12" fill="#e6fffb"/>
+  <path d="M8 14h18v15H8z" fill="none" stroke="#0f766e" stroke-width="2.6" stroke-linejoin="round"/>
+  <path d="M26 19h6l6 6v4H26z" fill="none" stroke="#0f766e" stroke-width="2.6" stroke-linejoin="round"/>
+  <circle cx="15" cy="33" r="3.2" fill="none" stroke="#0f766e" stroke-width="2.4"/>
+  <circle cx="32" cy="33" r="3.2" fill="none" stroke="#0f766e" stroke-width="2.4"/>
+  <path d="M8 29h4M22 29h-4" stroke="#14b8a6" stroke-width="2.2" stroke-linecap="round"/>
+</svg>
